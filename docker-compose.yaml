@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  # nginx: 
+  #   image: nginx:latest
+  #   container_name: joy_nginx
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+
+  container1:
+    image: jsarkar-devops:latest
+    
+
+    env_file:
+      - ./container1.env
+    # environment:
+    #   - DockerHostname=
+    #   - DockerContainerID=
+    #   - DockerCreated=
+      # - DockerMacAddress=
+      # - DockerContainerID=${docker inspect --format="{{.Id}}" container1}
+    ports:
+      - "9090"
+  
