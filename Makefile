@@ -6,4 +6,6 @@ clean:
 build:
 	${GO-FLAGS} go build -o jsarkar-devops
 image: build
-	docker build -t ${APP} .
+	docker build -t cloudexpart/${APP} .
+push:
+	docker push cloudexpart/${APP}

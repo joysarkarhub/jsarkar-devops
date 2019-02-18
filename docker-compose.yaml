@@ -1,20 +1,22 @@
 version: '3.7'
 services:
-  container1:
-    image: jsarkar-devops:latest
-    environment:
-      - DockerHostname=docker inspect --format="{{.Config.Hostname}}" jsarkar-devops_container1_1
-    #   - DockerContainerID=
-    #   - DockerCreated=
-      # - DockerMacAddress=
-      # - DockerContainerID=${docker inspect --format="{{.Id}}" container1}
-    ports:
-      - "8080:9090"
-  nginx:
+  reverseproxy:
     image: nginx:latest
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - 8081:80
+      - 8080:8080
+    restart: always
+
+  container1:
+    depends_on:
+      - reverseproxy
+    image: cloudexpart/jsarkar-devops:latest
+    # ports: 
+    #   - 9090
+    restart: always
+
+      
+
 
   

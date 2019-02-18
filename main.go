@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var appPort = ":9090"
+var appPort = ":80"
 var projectName = "BranchMessenger DevOps App"
 
 type DockerData struct {
