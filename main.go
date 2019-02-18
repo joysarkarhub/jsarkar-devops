@@ -1,24 +1,34 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"os"
+
+	"github.com/joysarkarhub/jsarkar-devops/model"
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
-	"net/http"
-	"encoding/json"
-	"os"
 )
 
 var appPort = ":9090"
 var projectName = "BranchMessenger DevOps App"
 
 type DockerData struct {
-	DockerHostname         string
-	DockerContainerID      string
-	DockerCreated          string
-	DockerMacAddress       string
-	DockerIPAddress        string
-	DockerImage            string
+	DockerHostname    string
+	DockerContainerID string
+	DockerCreated     string
+	DockerMacAddress  string
+	DockerIPAddress   string
+	DockerImage       string
+}
+
+func init() {
+	model.Setenv()
+	model.SetIP()
+	model.SetMac()
+	model.FetchContainerID()
+	model.SetenvContainerID()
 }
 
 func getEnv(key, fetchDefault string) string {
@@ -29,9 +39,9 @@ func getEnv(key, fetchDefault string) string {
 }
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	response, err := getDockerJson();
+	response, err := getDockerJson()
 	if err != nil {
-	    panic(err)
+		panic(err)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -61,9 +71,8 @@ func NotFound(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("DevOps Challenge - Page does not Exist!"))
 }
 
-
 func main() {
-	log.Infof("Starting %s on %s",projectName,appPort)
+	log.Infof("Starting %s on %s", projectName, appPort)
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.NotFound = http.HandlerFunc(NotFound)
@@ -73,12 +82,12 @@ func main() {
 func getDockerJson() ([]byte, error) {
 
 	data := DockerData{
-		DockerHostname:             getEnv("DockerHostname", fmt.Sprintf("Couldn't locate Hostname")),
-		DockerContainerID:			getEnv("DockerContainerID", fmt.Sprintf("ID not found!")),
-		DockerCreated:				getEnv("DockerCreated", fmt.Sprintf("Couldn't locate time created")),
-		DockerMacAddress:			getEnv("DockerMacAddress", fmt.Sprintf("Couldn't locate MacAddress")),
-		DockerIPAddress:			getEnv("DockerIPAddress", fmt.Sprintf("Couldn't locate IPAddress")),
-		DockerImage:				getEnv("DockerImage", fmt.Sprintf("Couldn't locate Image")),
+		DockerHostname:    getEnv("DockerHostname", fmt.Sprintf("Couldn't locate Hostname")),
+		DockerContainerID: getEnv("DockerContainerID", fmt.Sprintf("ID not found!")),
+		DockerCreated:     getEnv("DockerCreated", fmt.Sprintf("Couldn't locate time created")),
+		DockerMacAddress:  getEnv("DockerMacAddress", fmt.Sprintf("Couldn't locate MacAddress")),
+		DockerIPAddress:   getEnv("DockerIPAddress", fmt.Sprintf("Couldn't locate IPAddress")),
+		DockerImage:       getEnv("DockerImage", fmt.Sprintf("Couldn't locate Image")),
 	}
 
 	jsonData, err := json.MarshalIndent(data, "", "  ")
